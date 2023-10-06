@@ -38,8 +38,6 @@ def generate_prime():
     if(prime(num_primo) == True):
       return num_primo
 
-print(generate_prime())
-
 # Calcula o mod
 
 def mod_calc(a, b):
@@ -48,3 +46,24 @@ def mod_calc(a, b):
   else:
     resto = a % b
     return resto
+
+# Gera um número "E" aleatório, que satisfaz a condição "mdc(totient_N, E) == 1"
+
+def generate_E(totient_N):
+  E = random.randrange(1, totient_N)
+
+  while True:
+    if(MDC(totient_N, E) == 1):
+      return E
+
+# Implementando os valores para a criptografia
+
+p = generate_prime()
+q = generate_prime()
+
+N = p * q # Um dos componentes para a criação da chave pública
+totient_N = (p-1) * (q-1)
+
+E = generate_E(totient_N) # Segundo componente para a criação da chave pública
+
+public_key = (N, E) # Chave pública gerada para encriptação
