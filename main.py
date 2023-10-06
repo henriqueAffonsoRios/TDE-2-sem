@@ -41,3 +41,10 @@ def generate_prime():
 print(generate_prime())
 
 # Calcula o mod
+
+def mod_calc(a, b):
+  if a < b:
+    return a
+  else:
+    resto = a % b
+    return resto
