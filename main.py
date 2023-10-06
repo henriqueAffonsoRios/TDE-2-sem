@@ -39,3 +39,5 @@ def generate_prime():
       return num_primo
 
 print(generate_prime())
+
+# Calcula o mod
