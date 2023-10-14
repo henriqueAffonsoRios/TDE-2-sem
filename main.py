@@ -1,8 +1,7 @@
 import math
 import random
 
-
-msg = "Esta é uma mensagem"
+# Gerando chave pública
 
 # Declarando a função MDC (Máximo Divisor Comum)
 
@@ -33,10 +32,34 @@ def prime(num):
 
 def generate_prime():
   while True:
-    num_primo = random.randrange(1, 200)
+    num_primo = random.randrange(3, 300)
 
     if(prime(num_primo) == True):
       return num_primo
+
+# Implementando os valores para chave pública
+
+p = generate_prime()
+q = generate_prime()
+
+N = p * q # Um dos componentes para a criação da chave pública
+totient_N = (p-1) * (q-1)
+
+# Gera um número "E" aleatório, que satisfaz a condição "mdc(totient_N, E) == 1"
+
+def generate_E(toti):
+  E = random.randrange(1, toti)
+
+  while True:
+    if(MDC(toti, E) == 1):
+      return E
+
+E = generate_E(totient_N) # Segundo componente para a criação da chave pública
+
+public_key = (N, E) # Chave pública gerada para encriptação
+print('Esta é sua chave pública ', public_key)
+
+# Gerando chave privada
 
 # Calcula o mod
 
@@ -47,23 +70,53 @@ def mod_calc(a, b):
     resto = a % b
     return resto
 
-# Gera um número "E" aleatório, que satisfaz a condição "mdc(totient_N, E) == 1"
+# Gera a chave privada
 
-def generate_E(totient_N):
-  E = random.randrange(1, totient_N)
+def generate_chave_priv(totient_N, E):
+  priv_key = 0
 
-  while True:
-    if(MDC(totient_N, E) == 1):
-      return E
+  while(mod_calc(priv_key * E, totient_N) != 1):
+    priv_key += 1
 
-# Implementando os valores para a criptografia
+  return priv_key
 
-p = generate_prime()
-q = generate_prime()
+private_key = generate_chave_priv(totient_N, E)
+print('Esta é sua chave privada', private_key)
 
-N = p * q # Um dos componentes para a criação da chave pública
-totient_N = (p-1) * (q-1)
+# Criptografa uma mensagem
 
-E = generate_E(totient_N) # Segundo componente para a criação da chave pública
+def encript(msg, N, E):
+  tamanho = len(msg)
+  msg_encript = []
 
-public_key = (N, E) # Chave pública gerada para encriptação
+  for i in range(0, tamanho):
+    letra_ascii = ord(msg[i])
+    X = letra_ascii ** E
+    res = mod_calc(X, N)
+
+    msg_encript.append(res)
+
+  return msg_encript
+
+msg = input("Insira uma mensagem: ")
+msg_encript = encript(msg, N, E)
+
+print(*msg_encript, sep="")
+
+# Descriptografa uma mensagem
+
+def decript(msg_encript, N, private_key):
+  tamanho = len(msg_encript)
+  valores = []
+
+  for i in range(0, tamanho):
+    res = msg_encript[i] ** private_key
+    X = mod_calc(res, N)
+    letra = chr(X)
+
+    valores.append(letra)
+
+  return valores
+
+msg_decript = decript(msg_encript, N, private_key)
+print(*msg_decript, sep="")
