@@ -110,9 +110,9 @@ def decript(msg_encript, N, private_key):
   valores = []
 
   for i in range(0, tamanho):
-    res = msg_encript[i] ** private_key
-    X = mod_calc(res, N)
-    letra = chr(X)
+    X = msg_encript[i] ** private_key
+    res = mod_calc(X, N)
+    letra = chr(res)
 
     valores.append(letra)
 
